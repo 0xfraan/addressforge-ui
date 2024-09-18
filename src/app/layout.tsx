@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "AddressForge",
-  description: "Forge Ethereum addresses with custom patterns",
+  description: "Forge Ethereum addresses with custom patterns!",
 };
 
 export default function RootLayout({

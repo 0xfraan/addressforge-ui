@@ -1,9 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Job } from "../components/types";
 import { JobCard } from "../components/JobCard";
 import { Modal } from "../components/Modal";
 import { AddressInput } from "../components/AddressInput";
+
+const api = axios.create({
+  baseURL: "http://localhost:3333",
+});
 
 export default function Home() {
   const [pattern, setPattern] = useState<string>("");
@@ -14,32 +19,28 @@ export default function Home() {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:3333/job", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          pattern,
-          deployer: address,
-          owner: address,
-        }),
+      const response = await api.post<Job>("/job", {
+        pattern,
+        deployer: address,
+        owner: address,
       });
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
-
-      const json = await response.json();
 
       const newJob: Job = {
-        id: json.id,
+        id: response.data.id,
         pattern,
         state: "created",
       };
 
       setJobs([newJob, ...jobs]);
     } catch (error) {
-      console.error("Error submitting job:", error);
+      if (axios.isAxiosError(error)) {
+        console.error(
+          "Error submitting job:",
+          error.response?.data || error.message
+        );
+      } else {
+        console.error("Error submitting job:", error);
+      }
     }
   };
 
@@ -49,16 +50,17 @@ export default function Home() {
         const updatedJobs = await Promise.all(
           jobs.map(async (job) => {
             try {
-              const response = await fetch(
-                `http://localhost:3333/job/${job.id}`
-              );
-              if (!response.ok) {
-                throw new Error(`Response status: ${response.status}`);
-              }
-              const json = await response.json();
-              return json as Job;
+              const response = await api.get<Job>(`/job/${job.id}`);
+              return response.data;
             } catch (error) {
-              console.error("Error fetching job:", error);
+              if (axios.isAxiosError(error)) {
+                console.error(
+                  "Error fetching job:",
+                  error.response?.data || error.message
+                );
+              } else {
+                console.error("Error fetching job:", error);
+              }
               return job;
             }
           })
