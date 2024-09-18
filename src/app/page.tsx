@@ -1,113 +1,307 @@
-import Image from "next/image";
+"use client";
+import React, { useState, useEffect, useRef } from 'react';
 
-export default function Home() {
+const LoadingSpinner = () => (
+  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-blue-400"></div>
+);
+
+const JobCard = ({ job, onClick }) => {
+  const [runtime, setRuntime] = useState(0);
+
+  useEffect(() => {
+    let interval;
+    if (job.state === 'running' || job.state === 'created') {
+      interval = setInterval(() => {
+        setRuntime(prev => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [job.state]);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div 
+      className="bg-gray-950 border border-gray-800 rounded p-3 mb-3 cursor-pointer hover:bg-gray-900 transition-colors"
+      onClick={() => onClick(job)}
+    >
+      <div className="font-mono text-sm flex justify-between items-center">
+        <div>
+          <p className="text-blue-400">ID: {job.id}</p>
+          <p className="text-gray-400 truncate">Pattern: {job.pattern}</p>
+          {job.state === 'done' && (
+            <p className="text-green-400">Address: {job.address}</p>
+          )}
+        </div>
+        <div className="text-right">
+          <div className="flex items-center justify-end mb-1">
+            {(job.state === 'running' || job.state === 'created') && <LoadingSpinner />}
+            <span className={`ml-2 ${job.state === 'done' ? 'text-green-400' : 'text-yellow-400'}`}>
+            {job.state.charAt(0).toUpperCase() + job.state.slice(1)}
+            </span>
+          </div>
+          <p className="text-gray-400">
+            Runtime: {runtime}s
+          </p>
         </div>
       </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
-}
+};
+
+const Modal = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-gray-900 rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl text-blue-400">> Job_Details</h2>
+          <button 
+            onClick={onClose}
+            className="text-gray-500 hover:text-white"
+          >
+            [X]
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+const EthereumAddressInput = ({ value, onChange, title }) => {
+  const [addressChars, setAddressChars] = useState(Array(40).fill(null));
+  const [placeholderAddress, setPlaceholderAddress] = useState("");
+  const [cursorPosition, setCursorPosition] = useState(0);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    generateRandomPlaceholder();
+  }, []);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.setSelectionRange(cursorPosition, cursorPosition);
+    }
+  }, [cursorPosition]);
+
+  useEffect(() => {
+    const a = [];
+    for (let i = 0; i < addressChars.length; i++) {
+        if (addressChars[i] == null) {
+            a.push('X');
+        }
+        else {
+            a.push(addressChars[i]);
+        }
+    }
+    onChange(a.join(''));
+    console.log(a)
+  }, [addressChars, onChange]);
+
+  const generateRandomPlaceholder = () => {
+    const randomAddr = Array(40)
+      .fill(0)
+      .map(() => Math.floor(Math.random() * 16).toString(16))
+      .join("");
+    setPlaceholderAddress(randomAddr);
+  };
+
+  const handleInputChange = (e) => {
+    const inputValue = e.target.value.toLowerCase().replace(/[^0-9a-fX]/g, "");
+    const newPosition = e.target.selectionStart;
+    setAddressChars((prev) => {
+      const newChars = [...prev];
+      if (newPosition > cursorPosition) {
+        // Adding or replacing character
+        newChars[cursorPosition] = inputValue[cursorPosition];
+      } else if (newPosition < cursorPosition) {
+        // Backspace
+        newChars[cursorPosition - 1] = null;
+      }
+      return newChars;
+    });
+    setCursorPosition(newPosition);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "ArrowLeft" && cursorPosition > 0) {
+      e.preventDefault();
+      setCursorPosition((prev) => prev - 1);
+    } else if (e.key === "ArrowRight" && cursorPosition < 40) {
+      e.preventDefault();
+      setCursorPosition((prev) => prev + 1);
+    }
+  };
+
+  const handleClick = (e) => {
+    setCursorPosition(e.target.selectionStart);
+  };
+
+  const displayValue = addressChars
+    .map((char, index) => char || placeholderAddress[index])
+    .join("");
+
+  return (
+    <div className="w-full">
+      <label htmlFor="address" className="block text-gray-400 text-xs mb-1 bg-gray-900 p-1 rounded-t">
+        {title}
+      </label>
+      <div className="relative font-mono text-lg bg-gray-950 border border-gray-800 rounded-b">
+        <input
+          ref={inputRef}
+          type="text"
+          id="address"
+          value={displayValue}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          onClick={handleClick}
+          className="w-full bg-transparent p-2 rounded-b focus:outline-none focus:ring-1 focus:ring-blue-500 text-transparent relative z-10 caret-blue-400"
+          spellCheck="false"
+        />
+        <div className="absolute top-0 left-0 w-full h-full pointer-events-none p-2 flex">
+          {addressChars.map((char, index) => (
+            <span
+              key={index}
+              className={char !== null ? "text-blue-400" : "text-gray-600"}
+            >
+              {char !== null ? char : placeholderAddress[index]}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const JobSubmissionDashboard = () => {
+  const [pattern, setPattern] = useState('');
+  const [address, setAddress] = useState('');
+  const [jobs, setJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleSubmit = async () => {
+    try {
+        const response = await fetch('http://localhost:3333/job', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                pattern,
+                deployer: address,
+                owner: address
+        })
+    });
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+  
+      const json = await response.json();
+
+      const newJob = {
+        id: json.id,
+        pattern,
+        state: 'created',
+      };
+
+      setJobs([newJob, ...jobs]);
+    } catch (error) {
+      console.error('Error submitting job:', error);
+    }
+  };
+
+useEffect(() => {
+    const interval = setInterval(async () => {
+        try {
+            const updatedJobs = await Promise.all(jobs.map(async (job) => {
+                try {
+                    const response = await fetch(`http://localhost:3333/job/${job.id}`);
+                    if (!response.ok) {
+                        throw new Error(`Response status: ${response.status}`);
+                    }
+                    const json = await response.json();
+                    console.log(json)
+                    return json;
+                } catch (error) {
+                    console.error('Error fetching job:', error);
+                    return job;
+                }
+            }));
+            setJobs(updatedJobs);
+        } catch (error) {
+            console.error('Error updating jobs:', error);
+        }
+    }, 1000);
+
+    return () => clearInterval(interval);
+}, [jobs]);
+  
+
+  const handleJobClick = (job) => {
+    setSelectedJob(job);
+    setIsModalOpen(true);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-gray-300 p-4 font-mono">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-2xl mb-6 text-center text-blue-400">addressforge</h1>
+        
+        <div className="bg-gray-900 rounded p-4 mb-6">
+          <h2 className="text-xl mb-4 text-blue-400">> forge new address</h2>
+          <div className="flex flex-col gap-4">
+            <EthereumAddressInput value={pattern} onChange={setPattern} title="Pattern" />
+            <div className="w-full">
+              <label htmlFor="deployerAddress" className="block text-gray-400 text-xs mb-1 bg-gray-900 p-1 rounded-t">
+                Deployer Address
+              </label>
+              <input
+                id="deployerAddress"
+                className="w-full p-2 bg-gray-950 border border-gray-800 rounded-b text-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                value={address}
+                autoComplete='off'
+                onChange={(e) => setAddress(e.target.value)}
+              />
+            </div>
+            <button 
+              className="bg-blue-600 text-black p-2 rounded hover:bg-blue-500 transition-colors"
+              onClick={handleSubmit}
+            >
+              Execute
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-xl mb-4 text-blue-400">> history</h2>
+          <div className="bg-gray-900 rounded p-4 h-[calc(100vh-300px)] overflow-y-auto">
+            {jobs.map((job) => (
+              <JobCard 
+                key={job.id} 
+                job={job} 
+                onClick={handleJobClick}
+              />
+            ))}
+          </div>
+        </div>
+
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          {selectedJob ? (
+            <pre className="text-sm text-blue-400 overflow-x-auto">
+              {JSON.stringify(selectedJob, null, 2)}
+            </pre>
+          ) : (
+            <p className="text-gray-400">No job selected</p>
+          )}
+        </Modal>
+      </div>
+    </div>
+  );
+};
+
+export default function Home() {
+    return (
+     <JobSubmissionDashboard />
+    );
+  }
