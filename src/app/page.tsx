@@ -8,7 +8,7 @@ import { AddressInput } from "../components/AddressInput";
 import { Edit, Wallet, X } from "lucide-react";
 
 const api = axios.create({
-  baseURL: "http://localhost:3333",
+  baseURL: "https://backend.addressforge.xyz",
 });
 
 declare global {
