@@ -46,6 +46,7 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (cursorPosition === 40) return;
     const inputValue = e.target.value.toLowerCase().replace(/[^0-9a-fX]/g, "");
     const newPosition = e.target.selectionStart ?? 0;
     setAddressChars((prev) => {
@@ -61,7 +62,15 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "ArrowLeft" && cursorPosition > 0) {
+    if (e.key === "Backspace" && cursorPosition == 40) {
+      e.preventDefault();
+      setAddressChars((prev) => {
+        const newChars = [...prev];
+        newChars[cursorPosition - 1] = null;
+        return newChars;
+      });
+      setCursorPosition((prev) => prev - 1);
+    } else if (e.key === "ArrowLeft" && cursorPosition > 0) {
       e.preventDefault();
       setCursorPosition((prev) => prev - 1);
     } else if (e.key === "ArrowRight" && cursorPosition < 40) {
