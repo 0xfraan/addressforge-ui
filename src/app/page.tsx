@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, FC } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { AddressInput } from "../components/AddressInput";
 import { AddressDialog } from "@/components/AddressDialog";
@@ -14,7 +14,7 @@ const api = axios.create({
   baseURL: "https://backend.addressforge.xyz",
 });
 
-const Home: FC = () => {
+export default function Home() {
   const [address, setAddress] = useState<string>("");
   const [jobs, setJobs] = useState<Job[]>([]);
   const [pattern, setPattern] = useState<string>("");
@@ -37,16 +37,11 @@ const Home: FC = () => {
     const fetchJobs = async () => {
       if (isConnected && connectedAddress) {
         try {
-          const response = await axios.get<Job[]>(
-            `https://backend.addressforge.xyz/jobs/${connectedAddress}`
-          );
-
-          const sortedList = response.data.sort((a: Job, b: Job) => {
-            return (
+          const response = await api.get<Job[]>(`/jobs/${connectedAddress}`);
+          const sortedList = response.data.sort(
+            (a, b) =>
               new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-            );
-          });
-
+          );
           setJobs(sortedList);
         } catch (error) {
           console.error("Error fetching jobs:", error);
@@ -56,20 +51,16 @@ const Home: FC = () => {
 
     fetchJobs();
     const interval = setInterval(fetchJobs, 5000);
-
     return () => clearInterval(interval);
   }, [isConnected, connectedAddress]);
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post<Job>(
-        "https://backend.addressforge.xyz/job",
-        {
-          pattern,
-          deployer: address,
-          owner: address,
-        }
-      );
+      await api.post<Job>("/job", {
+        pattern,
+        deployer: address,
+        owner: address,
+      });
 
       const newJob: Job = {
         id: "0000000-00000-0000",
@@ -95,17 +86,11 @@ const Home: FC = () => {
     }
   };
 
-  const handleJobClick = (job: Job) => {
-    setSelectedJob(job);
-    setIsJobDetailsDialogOpen(true);
-  };
-
   useEffect(() => {
     const glitchInterval = setInterval(() => {
       setGlitchEffect(true);
       setTimeout(() => setGlitchEffect(false), 200);
     }, 3000);
-
     return () => clearInterval(glitchInterval);
   }, []);
 
@@ -137,7 +122,10 @@ const Home: FC = () => {
         <HistorySection
           isConnected={isConnected}
           jobs={jobs}
-          onJobClick={handleJobClick}
+          onJobClick={(job) => {
+            setSelectedJob(job);
+            setIsJobDetailsDialogOpen(true);
+          }}
         />
       </div>
 
@@ -156,6 +144,4 @@ const Home: FC = () => {
       />
     </div>
   );
-};
-
-export default Home;
+}
