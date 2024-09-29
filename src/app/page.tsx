@@ -53,84 +53,84 @@ const WalletButton = () => {
 };
 
 export default function Home() {
-  const [pattern, setPattern] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isConnectModalOpen, setIsConnectModalOpen] = useState<boolean>(false);
+  // const [pattern, setPattern] = useState<string>("");
+  // const [address, setAddress] = useState<string>("");
+  // const [jobs, setJobs] = useState<Job[]>([]);
+  // const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  // const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  // const [isConnectModalOpen, setIsConnectModalOpen] = useState<boolean>(false);
 
-  const handleSubmit = async () => {
-    try {
-      const response = await api.post<Job>("/job", {
-        pattern,
-        deployer: address,
-        owner: address,
-      });
+  // const handleSubmit = async () => {
+  //   try {
+  //     const response = await api.post<Job>("/job", {
+  //       pattern,
+  //       deployer: address,
+  //       owner: address,
+  //     });
 
-      const newJob: Job = {
-        id: response.data.id,
-        pattern,
-        state: "created",
-      };
+  //     const newJob: Job = {
+  //       id: response.data.id,
+  //       pattern,
+  //       state: "created",
+  //     };
 
-      setJobs([newJob, ...jobs]);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error(
-          "Error submitting job:",
-          error.response?.data || error.message
-        );
-      } else {
-        console.error("Error submitting job:", error);
-      }
-    }
-  };
+  //     setJobs([newJob, ...jobs]);
+  //   } catch (error) {
+  //     if (axios.isAxiosError(error)) {
+  //       console.error(
+  //         "Error submitting job:",
+  //         error.response?.data || error.message
+  //       );
+  //     } else {
+  //       console.error("Error submitting job:", error);
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const updatedJobs = await Promise.all(
-          jobs.map(async (job) => {
-            try {
-              const response = await api.get<Job>(`/job/${job.id}`);
-              return response.data;
-            } catch (error) {
-              if (axios.isAxiosError(error)) {
-                console.error(
-                  "Error fetching job:",
-                  error.response?.data || error.message
-                );
-              } else {
-                console.error("Error fetching job:", error);
-              }
-              return job;
-            }
-          })
-        );
-        setJobs(updatedJobs);
-      } catch (error) {
-        console.error("Error updating jobs:", error);
-      }
-    }, 1000);
+  // useEffect(() => {
+  //   const interval = setInterval(async () => {
+  //     try {
+  //       const updatedJobs = await Promise.all(
+  //         jobs.map(async (job) => {
+  //           try {
+  //             const response = await api.get<Job>(`/job/${job.id}`);
+  //             return response.data;
+  //           } catch (error) {
+  //             if (axios.isAxiosError(error)) {
+  //               console.error(
+  //                 "Error fetching job:",
+  //                 error.response?.data || error.message
+  //               );
+  //             } else {
+  //               console.error("Error fetching job:", error);
+  //             }
+  //             return job;
+  //           }
+  //         })
+  //       );
+  //       setJobs(updatedJobs);
+  //     } catch (error) {
+  //       console.error("Error updating jobs:", error);
+  //     }
+  //   }, 1000);
 
-    return () => clearInterval(interval);
-  }, [jobs]);
+  //   return () => clearInterval(interval);
+  // }, [jobs]);
 
-  const handleJobClick = (job: Job) => {
-    setSelectedJob(job);
-    setIsModalOpen(true);
-  };
+  // const handleJobClick = (job: Job) => {
+  //   setSelectedJob(job);
+  //   setIsModalOpen(true);
+  // };
 
-  const truncateAddress = (address: string) => {
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
+  // const truncateAddress = (address: string) => {
+  //   return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  // };
 
   return (
     <>
       <DeployerAndPatternInput />
 
-      <div className="min-h-screen bg-gray-900 text-gray-300 p-4 font-mono">
+      {/* <div className="min-h-screen bg-gray-900 text-gray-300 p-4 font-mono">
         <div className="max-w-4xl mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl text-blue-400">addressforge</h1>
@@ -212,86 +212,132 @@ export default function Home() {
           </Modal>
         </div>
       </div>
+   > */}
     </>
   );
 }
+interface Job {
+  id: string;
+  owner: string;
+  pattern: string;
+  deployer: string;
+  state: string;
+  salt: string | null;
+  address: string | null;
+  createdAt: string;
+  finishedAt: string | null;
+}
 
-const HistoryCard = ({ date, action, status }: any) => (
-  <div className="bg-gray-700 p-3 rounded-md mb-2 text-sm">
+const HistoryCard = ({ job, onClick }: { job: Job; onClick: () => void }) => (
+  <div
+    className="bg-gray-700 p-3 rounded-md mb-2 text-sm cursor-pointer"
+    onClick={onClick}
+  >
     <div className="flex justify-between items-center">
-      <span className="text-blue-300">{date}</span>
+      <span className="text-blue-300">
+        {new Date(job.createdAt).toLocaleString()}
+      </span>
       <span
         className={`px-2 py-0.5 rounded ${
-          status === "Completed" ? "bg-green-500" : "bg-yellow-500"
+          job.state === "done" ? "bg-green-500" : "bg-yellow-500"
         } text-black text-xs`}
       >
-        {status}
+        {job.state}
       </span>
     </div>
-    <div className="text-blue-100 mt-1">{action}</div>
+    <div className="text-blue-100 mt-1">
+      {job.address ? job.address : "0x" + job.pattern}
+    </div>
   </div>
 );
 
-const DeployerAndPatternInput = () => {
-  const [address, setAddress] = useState(
-    ""
-  );
-  const [jobs, setJobs] = useState<Job[]>([]);
+const shortenAddress = (addr: string) => {
+  if (addr.length < 10) return addr;
+  return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+};
 
+const DeployerAndPatternInput = () => {
+  const [address, setAddress] = useState("");
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [pattern, setPattern] = useState("");
   const [editAddress, setEditAddress] = useState("");
   const [glitchEffect, setGlitchEffect] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const {address: conectedAddress} = useAccount();
+  const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
+  const [isJobDetailsDialogOpen, setIsJobDetailsDialogOpen] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const { address: connectedAddress, isConnected } = useAccount();
 
   useEffect(() => {
-    if (conectedAddress) setAddress(conectedAddress);
-    if (!conectedAddress) setAddress("0x0000000000000000000000000000000000000000");
-  }, [conectedAddress]);
+    if (connectedAddress) setAddress(connectedAddress);
+    if (!connectedAddress)
+      setAddress("0x0000000000000000000000000000000000000000");
+  }, [connectedAddress]);
 
-  const shortenAddress = (addr: any) => {
-    if (typeof addr !== "string" || addr.length < 10) return addr;
-    return `0x${addr.slice(2, 6)}...${addr.slice(-4)}`;
-  };
+  useEffect(() => {
+    const fetchJobs = async () => {
+      if (isConnected && connectedAddress) {
+        try {
+          const response = await axios.get(
+            `https://backend.addressforge.xyz/jobs/${connectedAddress}`
+          );
+
+          const sortedList = response.data.sort((a: Job, b: Job) => {
+            return (
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          });
+
+          setJobs(sortedList);
+        } catch (error) {
+          console.error("Error fetching jobs:", error);
+        }
+      }
+    };
+
+    fetchJobs();
+    const interval = setInterval(fetchJobs, 5000);
+
+    return () => clearInterval(interval);
+  }, [isConnected, connectedAddress]);
 
   const handleSubmit = async () => {
     try {
-      const response = await api.post<Job>("/job", {
-        pattern,
-        deployer: address,
-        owner: address,
-      });
+      const response = await axios.post<Job>(
+        "https://backend.addressforge.xyz/job",
+        {
+          pattern,
+          deployer: address,
+          owner: address,
+        }
+      );
 
       const newJob: Job = {
-        id: response.data.id,
+        id: "0000000-00000-0000",
         pattern,
-        state: "created",
+        state: "sent",
+        createdAt: new Date().toISOString(),
+        owner: address,
+        deployer: address,
+        salt: null,
+        address: null,
+        finishedAt: null,
       };
-
       setJobs([newJob, ...jobs]);
-      console.log("j0bs", jobs);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error(
-          "Error submitting job:",
-          error.response?.data || error.message
-        );
-      } else {
-        console.error("Error submitting job:", error);
-      }
+      console.error("Error submitting job:", error);
     }
   };
 
   const handleEditSubmit = () => {
     if (editAddress) {
       setAddress(editAddress);
-      setIsDialogOpen(false);
+      setIsAddressDialogOpen(false);
     }
   };
 
-  const handleConnect = () => {
-    setIsConnected(!isConnected);
+  const handleJobClick = (job: Job) => {
+    setSelectedJob(job);
+    setIsJobDetailsDialogOpen(true);
   };
 
   useEffect(() => {
@@ -303,46 +349,11 @@ const DeployerAndPatternInput = () => {
     return () => clearInterval(glitchInterval);
   }, []);
 
-  // Placeholder history data
-  const historyData = [
-    {
-      date: "2024-09-25 14:30",
-      action: "Deployed Contract 0x1234...5678",
-      status: "Completed",
-    },
-    {
-      date: "2024-09-25 13:45",
-      action: "Updated Pattern: 0xA1B2C3",
-      status: "Completed",
-    },
-    {
-      date: "2024-09-25 12:15",
-      action: "Initiated Transaction",
-      status: "Pending",
-    },
-    {
-      date: "2024-09-24 23:30",
-      action: "Changed Deployer Address",
-      status: "Completed",
-    },
-    {
-      date: "2024-09-24 22:00",
-      action: "Executed Pattern Match",
-      status: "Completed",
-    },
-  ];
-
   return (
     <div className="min-h-screen bg-gray-900 p-4">
       <header className="container mx-auto flex justify-between items-center mb-8">
-        <h1 className="text-blue-400 text-2xl  font-mono">addressforge</h1>
+        <h1 className="text-blue-400 text-2xl font-mono">addressforge</h1>
         <WalletButton />
-        {/* <button 
-          onClick={handleConnect} 
-          className=""
-        >
-          <span>{isConnected ? 'Disconnect' : 'CONNECT'}</span>
-        </button> */}
       </header>
 
       <div className="flex flex-col items-center space-y-6 max-w-[28.5rem] mx-auto">
@@ -350,10 +361,9 @@ const DeployerAndPatternInput = () => {
           <div className="flex items-center justify-between">
             <span className="text-blue-400 text-sm font-bold">DEPLOYER:</span>
             <button
-              onClick={() => setIsDialogOpen(true)}
+              onClick={() => setIsAddressDialogOpen(true)}
               className="bg-gray-700 text-blue-300 text-sm font-medium py-2 px-4 rounded-md flex items-center space-x-2 hover:bg-gray-600 transition-colors border border-blue-500 shadow-[0_0_5px_#0000ff]"
             >
-              {/* <Zap size={16} className="text-yellow-400" /> */}
               <span className={glitchEffect ? "glitch" : ""}>
                 {shortenAddress(address)}
               </span>
@@ -369,7 +379,10 @@ const DeployerAndPatternInput = () => {
             />
           </div>
 
-          <button className="w-full bg-blue-500 hover:bg-blue-600 text-black font-bold py-3 rounded-md transition-colors shadow-[0_0_10px_#0000ff]" onClick={handleSubmit}>
+          <button
+            className="w-full bg-blue-500 hover:bg-blue-600 text-black font-bold py-3 rounded-md transition-colors shadow-[0_0_10px_#0000ff]"
+            onClick={handleSubmit}
+          >
             EXECUTE
           </button>
         </div>
@@ -381,15 +394,24 @@ const DeployerAndPatternInput = () => {
               HISTORY
             </span>
           </div>
-          <div className="h-86 w-full overflow-y-auto pr-2">
-            {historyData.map((item, index) => (
-              <HistoryCard key={index} {...item} />
-            ))}
-          </div>
+          {!isConnected && (
+            <p className="text-blue-300">Connect to see history</p>
+          )}
+          {isConnected && (
+            <div className="h-86 w-full overflow-y-auto pr-2">
+              {jobs.map((job) => (
+                <HistoryCard
+                  key={job.id}
+                  job={job}
+                  onClick={() => handleJobClick(job)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      {isDialogOpen && (
+      {isAddressDialogOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-gray-800 p-6 rounded-lg border border-blue-500">
             <h2 className="text-blue-400 font-mono text-lg mb-4">
@@ -404,7 +426,7 @@ const DeployerAndPatternInput = () => {
             />
             <div className="flex justify-end space-x-2">
               <button
-                onClick={() => setIsDialogOpen(false)}
+                onClick={() => setIsAddressDialogOpen(false)}
                 className="bg-gray-600 text-white px-4 py-2 rounded-md"
               >
                 Cancel
@@ -414,6 +436,55 @@ const DeployerAndPatternInput = () => {
                 className="bg-blue-500 hover:bg-blue-600 text-black font-bold px-4 py-2 rounded-md"
               >
                 Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isJobDetailsDialogOpen && selectedJob && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-gray-800 p-6 rounded-lg border border-blue-500">
+            <h2 className="text-blue-400 font-mono text-lg mb-4">
+              Job Details
+            </h2>
+            <div className="text-blue-300 space-y-2">
+              <p>
+                <strong>ID:</strong> {selectedJob.id}
+              </p>
+              <p>
+                <strong>Pattern:</strong> {selectedJob.pattern}
+              </p>
+              <p>
+                <strong>State:</strong> {selectedJob.state}
+              </p>
+              <p>
+                <strong>Created At:</strong>{" "}
+                {new Date(selectedJob.createdAt).toLocaleString()}
+              </p>
+              {selectedJob.address && (
+                <p>
+                  <strong>Address:</strong> {selectedJob.address}
+                </p>
+              )}
+              {selectedJob.salt && (
+                <p>
+                  <strong>Salt:</strong> {selectedJob.salt}
+                </p>
+              )}
+              {selectedJob.finishedAt && (
+                <p>
+                  <strong>Finished At:</strong>{" "}
+                  {new Date(selectedJob.finishedAt).toLocaleString()}
+                </p>
+              )}
+            </div>
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setIsJobDetailsDialogOpen(false)}
+                className="bg-blue-500 hover:bg-blue-600 text-black font-bold px-4 py-2 rounded-md"
+              >
+                Close
               </button>
             </div>
           </div>
