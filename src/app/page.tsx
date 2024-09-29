@@ -17,7 +17,7 @@ const api = axios.create({
 const WalletButton = () => {
   const { address, isConnected } = useAccount();
 
-  const truncateAddress = (address: string) => {
+  const truncateAddress = (address?: `0x${string}`) => {
     if (!address) return "";
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
@@ -216,7 +216,7 @@ export default function Home() {
   );
 }
 
-const HistoryCard = ({ date, action, status }) => (
+const HistoryCard = ({ date, action, status }: any) => (
   <div className="bg-gray-700 p-3 rounded-md mb-2 text-sm">
     <div className="flex justify-between items-center">
       <span className="text-blue-300">{date}</span>
@@ -250,7 +250,7 @@ const DeployerAndPatternInput = () => {
     if (!conectedAddress) setAddress("0x0000000000000000000000000000000000000000");
   }, [conectedAddress]);
 
-  const shortenAddress = (addr) => {
+  const shortenAddress = (addr: any) => {
     if (typeof addr !== "string" || addr.length < 10) return addr;
     return `0x${addr.slice(2, 6)}...${addr.slice(-4)}`;
   };
