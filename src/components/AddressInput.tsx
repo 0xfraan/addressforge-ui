@@ -48,6 +48,8 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (cursorPosition === 40) return;
     const inputValue = e.target.value.toLowerCase().replace(/[^0-9a-fX]/g, "");
+    console.log(inputValue);
+    if (inputValue == "") return;
     const newPosition = e.target.selectionStart ?? 0;
     setAddressChars((prev) => {
       const newChars = [...prev];
@@ -60,8 +62,22 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
     });
     setCursorPosition(newPosition);
   };
-
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    const symbols = [
+      '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
+      '_', '+', '-', '=', '[', '{', ']', '}', '\\', '|',
+      ';', ':', "'", '"', ',', '<', '.', '>', '/', '?',
+      '`', '~',
+    
+      'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+      'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+    
+      'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+      'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+    ];
+    if (symbols.includes(e.key)) {
+      e.preventDefault();
+    }
     if (e.key === "Backspace" && cursorPosition == 40) {
       e.preventDefault();
       setAddressChars((prev) => {
