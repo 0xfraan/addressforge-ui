@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, use } from "react";
 import axios from "axios";
-import { Job } from "../components/types";
 import { JobCard } from "../components/JobCard";
 import { Modal } from "../components/Modal";
 import { AddressInput } from "../components/AddressInput";
