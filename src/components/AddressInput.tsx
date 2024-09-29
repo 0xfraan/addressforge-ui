@@ -75,7 +75,7 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
       'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
       'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
     ];
-    if (symbols.includes(e.key)) {
+    if (symbols.includes(e.key) || (addressChars.join("").length >= 6 && e.key != 'Backspace')) {
       e.preventDefault();
     }
     if (e.key === "Backspace" && cursorPosition == 40) {
