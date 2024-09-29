@@ -9,6 +9,7 @@ import { DeployerSection } from "@/components/DeployerSection";
 import { HistorySection } from "@/components/HistorySection";
 import { JobDetails } from "@/components/JobDetails";
 import { Job } from "@/components/types";
+import { GetGolem } from "@/components/GetGolem";
 
 const api = axios.create({
   baseURL: "https://backend.addressforge.xyz",
@@ -97,7 +98,10 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-900 p-4">
       <header className="container mx-auto flex justify-between items-center mb-8">
-        <h1 className="text-blue-400 text-2xl font-mono">addressforge</h1>
+        <a href="/" className="text-blue-400 text-2xl font-mono">
+          addressforge
+        </a>
+        <GetGolem />
         <WalletButton />
       </header>
 

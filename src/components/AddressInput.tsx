@@ -80,7 +80,6 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
 
   return (
     <div className="w-full">
-      
       <div className="relative font-mono text-base bg-gray-700 border rounded-md border-blue-500 focus:border-blue-400 focus:ring-blue-700 ">
         <input
           ref={inputRef}
@@ -92,7 +91,6 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
           onClick={handleClick}
           className="w-full bg-transparent p-2  rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-transparent relative z-10 caret-blue-400"
           spellCheck="false"
-
         />
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none p-2 flex">
           {addressChars.map((char, index) => (

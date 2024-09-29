@@ -42,7 +42,7 @@ export const AddressDialog: React.FC<AddressDialogProps> = ({
         <div className="flex justify-end">
           <button
             onClick={onSubmit}
-            className="bg-blue-500 hover:bg-blue-600 text-black font-bold px-6 py-3 rounded-md text-lg transition-colors"
+            className="bg-blue-500 hover:bg-blue-600 text-black font-bold px-6 py-3 rounded-md text-lg transition-colors font-mono"
           >
             Confirm
           </button>
