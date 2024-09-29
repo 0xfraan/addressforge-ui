@@ -1,5 +1,4 @@
 'use client'
-
 import { WagmiProvider, createConfig, http } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
@@ -14,9 +13,9 @@ const config = createConfig(
       ),
     },
     walletConnectProjectId: 'aae1b3b0-0b3b-4b3b-8b3b-0b3b0b3b0b3b',
-    appName: "Your App Name",
+    appName: "AddressForge",
     appDescription: "Your App Description",
-    appUrl: "https://family.co",
+    appUrl: "https://addressforge.xyz",
     appIcon: "https://family.co/logo.png",
   }),
 );
