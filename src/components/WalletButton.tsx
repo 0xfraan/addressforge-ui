@@ -20,7 +20,7 @@ export const WalletButton = () => {
             {isConnected ? (
               <button
                 onClick={show}
-                className="bg-blue-500 hover:bg-blue-600 text-black font-mono font-semibold py-2 px-4 rounded-md transition-colors shadow-[0_0_5px_#0000ff] flex items-center space-x-2"
+                className="bg-blue-500 hover:bg-blue-600 text-white font-mono font-semibold py-2 px-4 rounded-md transition-colors shadow-[0_0_5px_#0000ff] flex items-center space-x-2"
                 title="Manage Connection"
               >
                 <span>{ensName || truncateAddress(address)}</span>
@@ -38,7 +38,7 @@ export const WalletButton = () => {
             ) : (
               <button
                 onClick={show}
-                className="bg-blue-500 hover:bg-blue-600 text-black font-mono font-semibold py-2 px-4 rounded-md transition-colors shadow-[0_0_5px_#0000ff] flex items-center space-x-2"
+                className="bg-blue-500 hover:bg-blue-600 text-white font-mono font-semibold py-2 px-4 rounded-md transition-colors shadow-[0_0_5px_#0000ff] flex items-center space-x-2"
               >
                 CONNECT
               </button>

@@ -173,6 +173,13 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
 
   return (
     <div className="w-full">
+      <label
+        htmlFor="address"
+        className="block text-blue-400 text-sm font-mono font-bold mb-2"
+      >
+        PATTERN:
+      </label>
+
       <div className="relative font-mono text-base bg-gray-700 border rounded-md border-blue-500 focus:border-blue-400 focus:ring-blue-700">
         <input
           ref={inputRef}

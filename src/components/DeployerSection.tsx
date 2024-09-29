@@ -1,9 +1,11 @@
+import React from "react";
 import { ChevronDown } from "lucide-react";
 
 interface DeployerSectionProps {
   address: string;
   glitchEffect: boolean;
   onEditClick: () => void;
+  isDisabled: boolean;
 }
 
 const shortenAddress = (addr: string): string => {
@@ -15,12 +17,21 @@ export const DeployerSection: React.FC<DeployerSectionProps> = ({
   address,
   glitchEffect,
   onEditClick,
+  isDisabled,
 }) => (
-  <div className="flex items-center justify-between">
-    <span className="text-blue-400 text-sm font-bold">DEPLOYER:</span>
+  <div className="items-center">
+    <label
+      htmlFor="deployer"
+      className="block text-blue-400 text-sm font-mono font-bold mb-2"
+    >
+      DEPLOYER:
+    </label>
     <button
-      onClick={onEditClick}
-      className="bg-gray-700 text-blue-300 text-sm font-medium py-2 px-4 rounded-md flex items-center space-x-2 hover:bg-gray-600 transition-colors border border-blue-500 shadow-[0_0_5px_#0000ff]"
+      onClick={isDisabled ? undefined : onEditClick}
+      className={`bg-gray-700 text-blue-300 text-sm font-medium py-2 px-4 rounded-md flex items-center space-x-2 transition-colors border border-blue-500 shadow-[0_0_5px_#0000ff] ${
+        isDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+      }`}
+      disabled={isDisabled}
     >
       <span className={glitchEffect ? "glitch" : ""}>
         {shortenAddress(address)}

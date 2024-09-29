@@ -1,16 +1,16 @@
-import React from "react";
-import { useAccount, useDisconnect } from "wagmi";
-import { X } from "lucide-react";
+import Link from "next/link";
+import { ShoppingCart } from "lucide-react";
 
 export const GetGolem = () => {
   return (
     <div>
-      <button
-        className="bg-blue-500 hover:bg-blue-600 text-black font-mono font-semibold py-2 px-4 rounded-md transition-colors shadow-[0_0_5px_#0000ff]"
-        title="Disconnect"
+      <Link
+        href="https://glm.golem.network/"
+        className="border-blue-500 flex space-x-2 text-blue-500 font-mono border bg-transparent hover:bg-blue-500 hover:text-white font-semibold py-2 px-4 rounded-md transition-colors"
       >
-        <span>Disconnect</span>
-      </button>
+        <ShoppingCart />
+        <span>Get GLM</span>
+      </Link>
     </div>
   );
 };
