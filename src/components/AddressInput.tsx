@@ -80,13 +80,8 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
 
   return (
     <div className="w-full">
-      <label
-        htmlFor="address"
-        className="block text-gray-400 text-xs mb-1 bg-gray-900 p-1 rounded-t"
-      >
-        {title}
-      </label>
-      <div className="relative font-mono text-lg bg-gray-950 border border-gray-800 rounded-b">
+      
+      <div className="relative font-mono text-base bg-gray-700 border rounded-md border-blue-500 focus:border-blue-400 focus:ring-blue-700 ">
         <input
           ref={inputRef}
           type="text"
@@ -95,14 +90,15 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           onClick={handleClick}
-          className="w-full bg-transparent p-2 rounded-b focus:outline-none focus:ring-1 focus:ring-blue-500 text-transparent relative z-10 caret-blue-400"
+          className="w-full bg-transparent p-2  rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-transparent relative z-10 caret-blue-400"
           spellCheck="false"
+
         />
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none p-2 flex">
           {addressChars.map((char, index) => (
             <span
               key={index}
-              className={char !== null ? "text-blue-400" : "text-gray-600"}
+              className={char !== null ? "text-blue-400" : "text-gray-400"}
             >
               {char !== null ? char : placeholderAddress[index]}
             </span>
