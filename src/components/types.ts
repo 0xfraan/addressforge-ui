@@ -1,6 +1,11 @@
 export interface Job {
   id: string;
+  owner: string;
   pattern: string;
-  state: "created" | "running" | "done";
-  address?: string;
+  deployer: string;
+  state: string;
+  salt: string | null;
+  address: string | null;
+  createdAt: string;
+  finishedAt: string | null;
 }
