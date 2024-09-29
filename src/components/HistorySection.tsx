@@ -25,7 +25,7 @@ export const HistorySection: React.FC<HistorySectionProps> = ({
       {!isConnected && <p className="text-blue-300">Connect to see history</p>}
     </div>
     {isConnected && (
-      <div className="max-h-[24rem] overflow-y-auto">
+      <div className="max-h-[25rem] overflow-y-auto">
         <div className="px-4 pb-4">
           {jobs.map((job) => (
             <HistoryCard
