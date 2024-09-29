@@ -13,7 +13,17 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      keyframes: {
+        blink: {
+          '0%, 100%': { opacity: 0 },
+          '50%': { opacity: 0.5 },
+        }
+      },
+      animation: {
+        blink: 'blink 1s step-start infinite',
+      }
     },
+
   },
   plugins: [],
 };

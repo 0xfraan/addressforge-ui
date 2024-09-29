@@ -20,6 +20,7 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
   );
   const [placeholderAddress, setPlaceholderAddress] = useState<string>("");
   const [cursorPosition, setCursorPosition] = useState<number>(0);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -48,7 +49,6 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (cursorPosition === 40) return;
     const inputValue = e.target.value.toLowerCase().replace(/[^0-9a-fX]/g, "");
-    console.log(inputValue);
     if (inputValue == "") return;
     const newPosition = e.target.selectionStart ?? 0;
     setAddressChars((prev) => {
@@ -62,20 +62,88 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
     });
     setCursorPosition(newPosition);
   };
+
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     const symbols = [
-      '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
-      '_', '+', '-', '=', '[', '{', ']', '}', '\\', '|',
-      ';', ':', "'", '"', ',', '<', '.', '>', '/', '?',
-      '`', '~',
-    
-      'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
-      'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-    
-      'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-      'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+      "!",
+      "@",
+      "#",
+      "$",
+      "%",
+      "^",
+      "&",
+      "*",
+      "(",
+      ")",
+      "_",
+      "+",
+      "-",
+      "=",
+      "[",
+      "{",
+      "]",
+      "}",
+      "\\",
+      "|",
+      ";",
+      ":",
+      "'",
+      '"',
+      ",",
+      "<",
+      ".",
+      ">",
+      "/",
+      "?",
+      "`",
+      "~",
+
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "m",
+      "n",
+      "o",
+      "p",
+      "q",
+      "r",
+      "s",
+      "t",
+      "u",
+      "v",
+      "w",
+      "x",
+      "y",
+      "z",
+
+      "G",
+      "H",
+      "I",
+      "J",
+      "K",
+      "L",
+      "M",
+      "N",
+      "O",
+      "P",
+      "Q",
+      "R",
+      "S",
+      "T",
+      "U",
+      "V",
+      "W",
+      "X",
+      "Y",
+      "Z",
     ];
-    if (symbols.includes(e.key) || (addressChars.join("").length >= 6 && e.key != 'Backspace')) {
+    if (
+      symbols.includes(e.key) ||
+      (addressChars.join("").length >= 8 && e.key != "Backspace")
+    ) {
       e.preventDefault();
     }
     if (e.key === "Backspace" && cursorPosition == 40) {
@@ -105,7 +173,7 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
 
   return (
     <div className="w-full">
-      <div className="relative font-mono text-base bg-gray-700 border rounded-md border-blue-500 focus:border-blue-400 focus:ring-blue-700 ">
+      <div className="relative font-mono text-base bg-gray-700 border rounded-md border-blue-500 focus:border-blue-400 focus:ring-blue-700">
         <input
           ref={inputRef}
           type="text"
@@ -114,18 +182,30 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           onClick={handleClick}
-          className="w-full bg-transparent p-2  rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-transparent relative z-10 caret-blue-400"
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          className="w-full bg-transparent p-2 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-transparent relative z-10 caret-transparent"
           spellCheck="false"
         />
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none p-2 flex">
           {addressChars.map((char, index) => (
             <span
               key={index}
-              className={char !== null ? "text-blue-400" : "text-gray-400"}
+              className={`relative ${
+                char !== null ? "text-blue-400" : "text-gray-400"
+              }`}
             >
               {char !== null ? char : placeholderAddress[index]}
+              {isFocused && index === cursorPosition && (
+                <span className="absolute inset-0 bg-white opacity-50 animate-blink"></span>
+              )}
             </span>
           ))}
+
+          <span className={`relative text-gray-400`}>
+            {cursorPosition === 40 ? " " : ""}
+            <span className="absolute inset-0 bg-white opacity-50 animate-blink"></span>
+          </span>
         </div>
       </div>
     </div>

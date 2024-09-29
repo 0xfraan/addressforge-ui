@@ -105,7 +105,7 @@ export default function Home() {
         <WalletButton />
       </header>
 
-      <div className="flex flex-col items-center space-y-6 max-w-[28.5rem] mx-auto">
+      <div className="flex flex-col items-center space-y-6 max-w-[29rem] mx-auto">
         <div className="bg-gray-800 p-6 rounded-2xl space-y-6 w-full font-mono border border-blue-500 shadow-[0_0_10px_#0000ff]">
           <DeployerSection
             address={address}
