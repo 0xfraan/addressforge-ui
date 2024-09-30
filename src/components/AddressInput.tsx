@@ -10,7 +10,7 @@ import React, {
 
 interface AddressInput {
   value: string;
-  onChange: (value: string) => void;
+  onChange: (value: string, isTouched: boolean) => void;
   title: string;
 }
 
@@ -21,6 +21,8 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
   const [placeholderAddress, setPlaceholderAddress] = useState<string>("");
   const [cursorPosition, setCursorPosition] = useState<number>(0);
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const [charCount, setCharCount] = useState<number>(0);
+  const [isTouched, setIsTouched] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -35,7 +37,11 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
 
   useEffect(() => {
     const a = addressChars.map((char) => char ?? "X");
-    onChange(a.join(""));
+    const newValue = a.join("");
+    const newIsTouched = addressChars.some((char) => char !== null);
+    onChange(newValue, newIsTouched);
+    setCharCount(addressChars.filter((char) => char !== null).length);
+    setIsTouched(newIsTouched);
   }, [addressChars, onChange]);
 
   const generateRandomPlaceholder = () => {
@@ -97,7 +103,6 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
       "?",
       "`",
       "~",
-
       "g",
       "h",
       "i",
@@ -118,7 +123,6 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
       "x",
       "y",
       "z",
-
       "G",
       "H",
       "I",
@@ -140,10 +144,7 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
       "Y",
       "Z",
     ];
-    if (
-      symbols.includes(e.key) ||
-      (addressChars.join("").length >= 8 && e.key != "Backspace")
-    ) {
+    if (symbols.includes(e.key) || (charCount >= 8 && e.key !== "Backspace")) {
       e.preventDefault();
     }
     if (e.key === "Backspace" && cursorPosition == 40) {
@@ -173,12 +174,17 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
 
   return (
     <div className="w-full">
-      <label
-        htmlFor="address"
-        className="block text-blue-400 text-sm font-mono font-bold mb-2"
-      >
-        PATTERN:
-      </label>
+      <div className="flex justify-between items-center mb-2">
+        <label
+          htmlFor="address"
+          className="block text-blue-400 text-sm font-mono font-bold"
+        >
+          PATTERN:
+        </label>
+        <span className="text-blue-400 text-sm font-mono">
+          {charCount}/8 characters
+        </span>
+      </div>
 
       <div className="relative font-mono text-base bg-gray-700 border rounded-md border-blue-500 focus:border-blue-400 focus:ring-blue-700">
         <input
@@ -210,7 +216,7 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
           ))}
 
           <span className={`relative text-gray-400`}>
-            {cursorPosition === 40 ? " " : ""}
+            {cursorPosition === 40 ? " " : ""}
             <span className="absolute inset-0 bg-white opacity-50 animate-blink"></span>
           </span>
         </div>

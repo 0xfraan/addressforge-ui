@@ -35,6 +35,7 @@ export default function Home() {
   const { address: connectedAddress, isConnected } = useAccount();
   const [submissionsLeft, setSubmissionsLeft] =
     useState<number>(SUBMISSIONS_LIMIT);
+  const [isInputTouched, setIsInputTouched] = useState<boolean>(false);
 
   const GLM_CONTRACT_ADDRESS = "0x0B220b82F3eA3B7F6d9A1D8ab58930C064A2b5Bf";
   const { data: balanceData, isLoading: isBalanceLoading } = useBalance({
@@ -110,7 +111,6 @@ export default function Home() {
       };
       setJobs([newJob, ...jobs]);
 
-      // Update localStorage and submissions left
       const submissions = JSON.parse(
         localStorage.getItem("submissions") || "[]"
       );
@@ -163,30 +163,39 @@ export default function Home() {
             />
             <AddressInput
               value={pattern}
-              onChange={setPattern}
+              onChange={(value, isTouched) => {
+                setPattern(value);
+                setIsInputTouched(isTouched);
+              }}
               title="Pattern"
             />
             <ConnectKitButton.Custom>
               {({ isConnected, show }) => (
-                <button
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-md transition-colors shadow-[0_0_10px_#0000ff]"
-                  onClick={isConnected ? handleSubmit : show}
-                  //@ts-ignore
-                  disabled={submissionsLeft === 0 && balanceData?.value == 0}
-                >
-                  {isConnected
-                    ? //@ts-ignore
-                      submissionsLeft > 0 || balanceData?.value > 0
-                      ? //@ts-ignore
-                        `EXECUTE ${
-                          //@ts-ignore
-                          balanceData?.value > 0
-                            ? ""
-                            : `(${submissionsLeft} left)`
-                        }`
-                      : "LIMIT REACHED"
-                    : "CONNECT WALLET"}
-                </button>
+                <div>
+                  <button
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-md transition-colors shadow-[0_0_10px_#0000ff] disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={isConnected ? handleSubmit : show}
+                    disabled={
+                      !isInputTouched ||
+                      (submissionsLeft === 0 && (balanceData?.value ?? 0) == 0)
+                    }
+                  >
+                    {isConnected
+                      ? submissionsLeft > 0 || (balanceData?.value ?? 0) > 0
+                        ? `EXECUTE ${
+                            balanceData?.value ?? 0 > 0
+                              ? ""
+                              : `(${submissionsLeft} left)`
+                          }`
+                        : "LIMIT REACHED"
+                      : "CONNECT WALLET"}
+                  </button>
+                  {isConnected && submissionsLeft === 0 && (
+                    <p className="text-red-500 text-sm mt-2 font-mono">
+                      Buy Golem to increase your limit!
+                    </p>
+                  )}
+                </div>
               )}
             </ConnectKitButton.Custom>
           </div>
