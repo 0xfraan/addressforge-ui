@@ -1,217 +1,68 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Job } from "../components/types";
-import { JobCard } from "../components/JobCard";
-import { Modal } from "../components/Modal";
-import { AddressInput } from "../components/AddressInput";
-import { Edit, Wallet, X } from "lucide-react";
-import { ConnectKitButton } from "connectkit";
-import { useAccount } from "wagmi";
-
-const api = axios.create({
-  baseURL: "https://backend.addressforge.xyz",
-});
-
-
-const WalletButton = () => {
-  const { address, isConnected } = useAccount();
-
-  const truncateAddress = (address: string) => {
-    if (!address) return '';
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
-
-  return (
-    <ConnectKitButton.Custom>
-      {({ isConnected, show, truncatedAddress, ensName }) => {
-        return (
-          <div>
-            {isConnected ? (
-              <div className="flex items-center bg-blue-600 text-black p-2 rounded">
-                <span>{ensName || truncatedAddress}</span>
-                <button
-                  onClick={show}
-                  className="ml-2 hover:text-gray-300 transition-colors"
-                  title="Disconnect"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={show}
-                className="bg-blue-600 text-black p-2 rounded hover:bg-blue-500 transition-colors flex items-center"
-              >
-                Connect
-              </button>
-            )}
-          </div>
-        );
-      }}
-    </ConnectKitButton.Custom>
-  );
-};
-
+import Image from "next/image";
+import Link from "next/link";
+import GolemText from "@/images/golemtxt.svg";
+import GitLogo from "@/images/git.svg";
 
 export default function Home() {
-  const [pattern, setPattern] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isConnectModalOpen, setIsConnectModalOpen] = useState<boolean>(false);
-
-  const handleSubmit = async () => {
-    try {
-      const response = await api.post<Job>("/job", {
-        pattern,
-        deployer: address,
-        owner: address,
-      });
-
-      const newJob: Job = {
-        id: response.data.id,
-        pattern,
-        state: "created",
-      };
-
-      setJobs([newJob, ...jobs]);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error(
-          "Error submitting job:",
-          error.response?.data || error.message
-        );
-      } else {
-        console.error("Error submitting job:", error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const updatedJobs = await Promise.all(
-          jobs.map(async (job) => {
-            try {
-              const response = await api.get<Job>(`/job/${job.id}`);
-              return response.data;
-            } catch (error) {
-              if (axios.isAxiosError(error)) {
-                console.error(
-                  "Error fetching job:",
-                  error.response?.data || error.message
-                );
-              } else {
-                console.error("Error fetching job:", error);
-              }
-              return job;
-            }
-          })
-        );
-        setJobs(updatedJobs);
-      } catch (error) {
-        console.error("Error updating jobs:", error);
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [jobs]);
-
-  const handleJobClick = (job: Job) => {
-    setSelectedJob(job);
-    setIsModalOpen(true);
-  };
-
-  const truncateAddress = (address: string) => {
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
-
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-300 p-4 font-mono">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl text-blue-400">addressforge</h1>
-          <div className="flex items-center">
-            <WalletButton />
-          </div>
-        </div>
+    <div className="min-h-screen flex flex-col bg-gray-900 text-blue-500 font-mono">
+      <header className="container mx-auto px-4 py-6 flex justify-between items-center">
+        <Link href="/" className="text-3xl font-mono">
+          addressforge
+        </Link>
+        <nav className="flex items-center space-x-6">
+          <Link href="/about" className="hover:text-blue-400">
+            About
+          </Link>
+          <div className="h-4 w-px bg-blue-500" />
 
-        <div className="bg-gray-900 rounded p-4 mb-6">
-          <h2 className="text-xl mb-4 text-blue-400"> forge new address</h2>
-          <div className="flex flex-col gap-4">
-            <AddressInput
-              value={pattern}
-              onChange={setPattern}
-              title="Pattern"
+          <Link href="/terms" className="hover:text-blue-400">
+            Terms of use
+          </Link>
+          <div className="h-4 w-px bg-blue-500" />
+
+          <Link
+            href={""}
+            className="flex items-center space-x-2 text-blue-500 hover:text-blue-400 transition-colors"
+          >
+            <span>Github</span>
+            <Image
+              src={GitLogo}
+              alt={"Github Logo Icon"}
+              width={20}
+              height={20}
             />
-            <div className="w-full">
-              <label
-                htmlFor="deployerAddress"
-                className="block text-gray-400 text-xs mb-1 bg-gray-900 p-1 rounded-t"
-              >
-                Deployer Address
-              </label>
-              <input
-                id="deployerAddress"
-                className="w-full p-2 bg-gray-950 border border-gray-800 rounded-b text-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                value={address}
-                autoComplete="off"
-              />
-            </div>
-            <button
-              className="bg-blue-600 text-black p-2 rounded hover:bg-blue-500 transition-colors"
-              onClick={handleSubmit}
-            >
-              Execute
-            </button>
-          </div>
-        </div>
+          </Link>
+          <Link
+            href="/tool"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            Launch App
+          </Link>
+        </nav>
+      </header>
 
-        <div>
-          <h2 className="text-xl mb-4 text-blue-400"> history</h2>
-          <div className="bg-gray-900 rounded p-4 h-[calc(100vh-300px)] overflow-y-auto">
-            {jobs.map((job) => (
-              <JobCard key={job.id} job={job} onClick={handleJobClick} />
-            ))}
-          </div>
-        </div>
-
-        <Modal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          title="Job Details"
+      <main className="flex-grow flex flex-col items-center justify-center text-center px-4">
+        <h1 className="text-5xl md:text-6xl font-bold mb-8">
+          Create3 vanity address
+          <br />
+          salt generator
+        </h1>
+        <Link
+          href="/tool"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-md text-lg font-semibold"
         >
-          {selectedJob ? (
-            <pre className="text-sm text-blue-400 overflow-x-auto">
-              {JSON.stringify(selectedJob, null, 2)}
-            </pre>
-          ) : (
-            <p className="text-gray-400">No job selected</p>
-          )}
-        </Modal>
+          LAUNCH APP
+        </Link>
+      </main>
 
-        <Modal
-          isOpen={isConnectModalOpen}
-          onClose={() => setIsConnectModalOpen(false)}
-          title="Connect Wallet"
-        >
-          <div className="mb-4">
-            <label
-              htmlFor="toAddress"
-              className="block text-gray-400 text-xs mb-1"
-            >
-              To Address
-            </label>
-            <input
-              id="toAddress"
-              className="w-full p-2 bg-gray-950 border border-gray-800 rounded text-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              placeholder="Address or ENS"
-            />
-          </div>
-        </Modal>
-      </div>
+      <footer className="flex mx-auto px-4 py-6 text-center text-sm">
+        &copy; {new Date().getFullYear()} AddressForge. All rights reserved.
+        <Link className="flex" href={"https://www.golem.network/"}>
+          Powered by
+          <Image className="ml-2 mt-1" src={GolemText} alt={"Golem Network"} />
+        </Link>
+      </footer>
     </div>
   );
 }
