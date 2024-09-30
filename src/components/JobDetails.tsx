@@ -51,7 +51,7 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center font-mono p-4">
-      <div className="bg-gray-800 p-4 sm:p-6 rounded-lg border border-blue-500 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-gray-800 p-4 sm:p-6 rounded-lg border border-blue-500 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-blue-400 font-mono text-lg sm:text-xl">
             Job Details
@@ -65,18 +65,16 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
           </button>
         </div>
         <div className="text-blue-300 space-y-2 text-sm sm:text-base">
-          <p className="break-all">
-            <strong>ID:</strong> {job.id}
-          </p>
-          <p className="break-all">
-            <strong>Pattern:</strong> {job.pattern}
-          </p>
           <p>
             <strong>State:</strong> {job.state}
           </p>
           <p>
             <strong>Created At:</strong>{" "}
             {new Date(job.createdAt).toLocaleString()}
+          </p>
+          <p>
+            <strong>Runtime:</strong>{" "}
+            {calculateRuntime(job.createdAt, job.finishedAt)}
           </p>
           {job.address && (
             <p className="break-all">
@@ -100,16 +98,7 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
               </button>
             </div>
           )}
-          {job.finishedAt && (
-            <p>
-              <strong>Finished At:</strong>{" "}
-              {new Date(job.finishedAt).toLocaleString()}
-            </p>
-          )}
-          <p>
-            <strong>Runtime:</strong>{" "}
-            {calculateRuntime(job.createdAt, job.finishedAt)}
-          </p>
+         
         </div>
       </div>
     </div>
