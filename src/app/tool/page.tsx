@@ -140,7 +140,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-900">
       <header className="container mx-auto flex justify-between items-center px-4 py-8">
-        <a href="/" className="text-blue-400 text-3xl font-mono">
+        <a href="/" className="text-blue-500 text-3xl font-mono">
           addressforge
         </a>
         <div className="flex items-center space-x-6">

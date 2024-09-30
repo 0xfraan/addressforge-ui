@@ -6,7 +6,7 @@ import GitLogo from "@/images/git.svg";
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-blue-500 font-mono">
-      <header className="container mx-auto px-4 py-6 flex justify-between items-center">
+      <header className="container mx-auto px-4 py-8 flex justify-between items-center">
         <Link href="/" className="text-3xl font-mono">
           addressforge
         </Link>
@@ -34,31 +34,31 @@ export default function Home() {
             />
           </Link>
           <Link
-            href="/tool"
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+          href="/tool"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-mono font-semibold py-2 px-4 rounded-md transition-colors shadow-[0_0_5px_#0000ff] flex items-center space-x-2"
           >
-            Launch App
-          </Link>
+          LAUNCH APP
+        </Link>
         </nav>
       </header>
 
       <main className="flex-grow flex flex-col items-center justify-center text-center px-4">
         <h1 className="text-5xl md:text-6xl font-bold mb-8">
-          Create3 vanity address
+          CREATE3 vanity address
           <br />
           salt generator
         </h1>
         <Link
           href="/tool"
-          className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-md text-lg font-semibold"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-md text-lg font-semibold m-4"
         >
           LAUNCH APP
         </Link>
       </main>
 
-      <footer className="flex mx-auto px-4 py-6 text-center text-sm">
+      <footer className="flex mx-auto px-4 py-6 text-center text-xs">
         &copy; {new Date().getFullYear()} AddressForge. All rights reserved.
-        <Link className="flex" href={"https://www.golem.network/"}>
+        <Link className="flex pl-2" href={"https://www.golem.network/"}>
           Powered by
           <Image className="ml-2 mt-1" src={GolemText} alt={"Golem Network"} />
         </Link>
