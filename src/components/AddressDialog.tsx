@@ -7,6 +7,7 @@ interface AddressDialogProps {
   editAddress: string;
   setEditAddress: (address: string) => void;
   onSubmit: () => void;
+  connectedAddress?: string;
 }
 
 export const AddressDialog: React.FC<AddressDialogProps> = ({
@@ -15,6 +16,7 @@ export const AddressDialog: React.FC<AddressDialogProps> = ({
   editAddress,
   setEditAddress,
   onSubmit,
+  connectedAddress,
 }) => {
   const [isValidAddress, setIsValidAddress] = useState(true);
 
@@ -26,6 +28,12 @@ export const AddressDialog: React.FC<AddressDialogProps> = ({
   useEffect(() => {
     setIsValidAddress(validateEthereumAddress(editAddress));
   }, [editAddress]);
+
+  const handlePasteFromWallet = () => {
+    if (connectedAddress) {
+      setEditAddress(connectedAddress);
+    }
+  };
 
   const handleSubmit = () => {
     if (isValidAddress) {
@@ -65,7 +73,14 @@ export const AddressDialog: React.FC<AddressDialogProps> = ({
             Entered address is incorrect. Please enter a valid Ethereum address.
           </p>
         )}
-        <div className="flex justify-end">
+        <div className="flex justify-end space-x-2">
+          <button
+            onClick={handlePasteFromWallet}
+            className="bg-gray-600 hover:bg-gray-700 text-white font-bold px-4 py-2 rounded-md text-sm transition-colors font-mono"
+            disabled={!connectedAddress}
+          >
+            Paste from Wallet
+          </button>
           <button
             onClick={handleSubmit}
             className={`bg-blue-500 hover:bg-blue-600 text-white font-bold px-4 py-2 rounded-md text-sm transition-colors font-mono ${
