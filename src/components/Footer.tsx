@@ -7,7 +7,7 @@ import Link from "next/link";
 export const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-900 py-6">
-      <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-blue-500 text-md font-mono">
+      <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-blue-500 text-xs font-mono">
         <div className="mb-4 md:mb-0">
           &copy; {new Date().getFullYear()} AddressForge. All rights reserved
         </div>
@@ -41,8 +41,8 @@ export const Footer: React.FC = () => {
             <Image
               src={GitLogo}
               alt={"Github Logo Icon"}
-              width={20}
-              height={20}
+              width={16}
+              height={16}
             />
           </Link>
         </div>

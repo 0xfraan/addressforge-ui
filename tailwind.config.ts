@@ -15,8 +15,8 @@ const config: Config = {
       },
       keyframes: {
         blink: {
-          '0%, 100%': { opacity: 0 },
-          '50%': { opacity: 0.5 },
+          '0%, 100%': { opacity: '0' },
+          '50%': { opacity: '0.5' },
         }
       },
       animation: {

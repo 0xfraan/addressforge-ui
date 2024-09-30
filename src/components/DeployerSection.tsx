@@ -28,7 +28,7 @@ export const DeployerSection: React.FC<DeployerSectionProps> = ({
     </label>
     <button
       onClick={isDisabled ? undefined : onEditClick}
-      className={`bg-gray-700 text-blue-300 text-sm font-medium py-2 px-4 rounded-md flex items-center space-x-2 transition-colors border border-blue-500 shadow-[0_0_5px_#0000ff] ${
+      className={`bg-gray-700 text-blue-300 text-sm font-medium py-2 px-4 rounded-md flex items-center space-x-2 transition-colors border border-blue-500 ${
         isDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
       }`}
       disabled={isDisabled}

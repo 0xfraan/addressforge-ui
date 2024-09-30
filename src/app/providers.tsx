@@ -12,7 +12,7 @@ const config = createConfig(
         `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`
       ),
     },
-    walletConnectProjectId: "aae1b3b0-0b3b-4b3b-8b3b-0b3b0b3b0b3b",
+    walletConnectProjectId: "b8ffa896b5587f9afe49bb85b94ad319",
     appName: "AddressForge",
     appDescription: "Create3 Vanity Address Salt Generator",
     appUrl: "https://addressforge.xyz",
