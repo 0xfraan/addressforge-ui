@@ -6,7 +6,7 @@ import { Providers } from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AddressForge",
+  title: "addressforge",
   description: "Forge Ethereum addresses with custom patterns!",
 };
 

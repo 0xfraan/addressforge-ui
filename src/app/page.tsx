@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import GolemText from "@/images/golemtxt.svg";
@@ -7,10 +6,6 @@ import GitLogo from "@/images/git.svg";
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-blue-500 font-mono">
-      <Head>
-        <title>AddressForge - Create3 Vanity Address Salt Generator</title>
-      </Head>
-
       <header className="container mx-auto px-4 py-6 flex justify-between items-center">
         <Link href="/" className="text-3xl font-mono">
           addressforge

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { AddressInput } from "../../components/AddressInput";
 import { AddressDialog } from "@/components/AddressDialog";
-import { useAccount } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 import { WalletButton } from "@/components/WalletButton";
 import { DeployerSection } from "@/components/DeployerSection";
 import { HistorySection } from "@/components/HistorySection";
@@ -18,6 +18,9 @@ const api = axios.create({
   baseURL: "https://backend.addressforge.xyz",
 });
 
+const SUBMISSIONS_LIMIT = 5;
+const SUBMISSIONS_INTERVAL = 60 * 60 * 1000; // 1 hour in milliseconds
+
 export default function Home() {
   const [address, setAddress] = useState<string>("");
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -30,6 +33,14 @@ export default function Home() {
     useState<boolean>(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const { address: connectedAddress, isConnected } = useAccount();
+  const [submissionsLeft, setSubmissionsLeft] =
+    useState<number>(SUBMISSIONS_LIMIT);
+
+  const GLM_CONTRACT_ADDRESS = "0x0B220b82F3eA3B7F6d9A1D8ab58930C064A2b5Bf";
+  const { data: balanceData, isLoading: isBalanceLoading } = useBalance({
+    address: connectedAddress,
+    token: GLM_CONTRACT_ADDRESS,
+  });
 
   useEffect(() => {
     if (connectedAddress) setAddress(connectedAddress);
@@ -58,6 +69,26 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [isConnected, connectedAddress]);
 
+  useEffect(() => {
+    const updateSubmissionsLeft = () => {
+      const submissions = JSON.parse(
+        localStorage.getItem("submissions") || "[]"
+      );
+      const now = Date.now();
+      const validSubmissions = submissions.filter(
+        (time: number) => now - time < SUBMISSIONS_INTERVAL
+      );
+      localStorage.setItem("submissions", JSON.stringify(validSubmissions));
+      setSubmissionsLeft(
+        Math.max(0, SUBMISSIONS_LIMIT - validSubmissions.length)
+      );
+    };
+
+    updateSubmissionsLeft();
+    const interval = setInterval(updateSubmissionsLeft, 60000); // Update every minute
+    return () => clearInterval(interval);
+  }, []);
+
   const handleSubmit = async () => {
     try {
       await api.post<Job>("/job", {
@@ -78,6 +109,14 @@ export default function Home() {
         finishedAt: null,
       };
       setJobs([newJob, ...jobs]);
+
+      // Update localStorage and submissions left
+      const submissions = JSON.parse(
+        localStorage.getItem("submissions") || "[]"
+      );
+      submissions.push(Date.now());
+      localStorage.setItem("submissions", JSON.stringify(submissions));
+      setSubmissionsLeft((prev) => Math.max(0, prev - 1));
     } catch (error) {
       console.error("Error submitting job:", error);
     }
@@ -105,14 +144,16 @@ export default function Home() {
           addressforge
         </a>
         <div className="flex items-center space-x-6">
-          {isConnected && <GolemBalance />}
+          {isConnected && (
+            <GolemBalance data={balanceData} isLoading={isBalanceLoading} />
+          )}
           <GetGolem />
           <WalletButton />
         </div>
       </header>
 
-      <main className="flex-grow container mx-auto px-4">
-        <div className="flex flex-col items-center space-y-6 max-w-[29rem] mx-auto">
+      <main className="flex-grow container mx-auto px-4 flex justify-center items-center">
+        <div className="flex flex-col items-center space-y-6 mx-auto w-[29rem]">
           <div className="bg-gray-800 p-6 rounded-2xl space-y-6 w-full font-mono border border-blue-500 shadow-[0_0_10px_#0000ff]">
             <DeployerSection
               address={address}
@@ -126,16 +167,27 @@ export default function Home() {
               title="Pattern"
             />
             <ConnectKitButton.Custom>
-              {({ isConnected, show }) => {
-                return (
-                  <button
-                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-md transition-colors shadow-[0_0_10px_#0000ff]"
-                    onClick={isConnected ? handleSubmit : show}
-                  >
-                    {isConnected ? "EXECUTE" : "CONNECT WALLET"}
-                  </button>
-                );
-              }}
+              {({ isConnected, show }) => (
+                <button
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-md transition-colors shadow-[0_0_10px_#0000ff]"
+                  onClick={isConnected ? handleSubmit : show}
+                  //@ts-ignore
+                  disabled={submissionsLeft === 0 && balanceData?.value == 0}
+                >
+                  {isConnected
+                    ? //@ts-ignore
+                      submissionsLeft > 0 || balanceData?.value > 0
+                      ? //@ts-ignore
+                        `EXECUTE ${
+                          //@ts-ignore
+                          balanceData?.value > 0
+                            ? ""
+                            : `(${submissionsLeft} left)`
+                        }`
+                      : "LIMIT REACHED"
+                    : "CONNECT WALLET"}
+                </button>
+              )}
             </ConnectKitButton.Custom>
           </div>
 

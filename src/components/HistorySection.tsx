@@ -23,18 +23,18 @@ export const HistorySection: React.FC<HistorySectionProps> = ({
         </span>
       </div>
       {!isConnected && (
-        <p className="text-blue-300 min-h-32 flex items-center justify-center">
+        <p className="text-blue-300 h-[25rem] flex items-center justify-center">
           Connect to see history
         </p>
       )}
-    
-    {isConnected && (
-      <div className="max-h-[25rem] overflow-y-auto">
-        {jobs.length === 0 ? (
-          <p className="text-blue-300 min-h-32 flex items-center justify-center">
+      {isConnected && jobs.length === 0 && (
+          <p className="text-blue-300 h-[25rem] flex items-center justify-center">
             No history
           </p>
-        ) : (
+        )}
+    </div>
+    {isConnected && jobs.length>0 && (
+      <div className="max-h-[25rem] overflow-y-auto">
           <div className="px-4 pb-4">
             {jobs.map((job) => (
               <HistoryCard
@@ -44,9 +44,8 @@ export const HistorySection: React.FC<HistorySectionProps> = ({
               />
             ))}
           </div>
-        )}
       </div>
     )}
-    </div>
+    
   </div>
 );
