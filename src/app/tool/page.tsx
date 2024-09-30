@@ -182,18 +182,18 @@ export default function Home() {
       <main className="flex-grow container mx-auto px-4 flex justify-center items-center">
         <div className="flex flex-col items-center space-y-6 mx-auto w-[29rem]">
           <div className="bg-gray-800 p-6 rounded-2xl space-y-6 w-full font-mono border border-blue-500 shadow-[0_0_10px_#0000ff]">
-            <div className="flex space-x-4">
+            <div className="flex justify-between">
               <DeployerSection
                 address={address}
                 glitchEffect={glitchEffect}
                 onEditClick={() => setIsAddressDialogOpen(true)}
                 isDisabled={!isConnected}
               />
-              <GasReduction
+              {/* <GasReduction
                 onChange={(value) =>
                   console.log(`Selected gas reduction: ${value}`)
                 }
-              />
+              /> */}
               <HelpIcon />
             </div>
             <AddressInput

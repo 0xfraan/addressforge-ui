@@ -11,7 +11,7 @@ export const HelpIcon: React.FC = () => {
   return (
     <>
       <button
-        className=" w-full rounded-sm bg-gray-700 border border-blue-500 flex items-center justify-center text-blue-400 hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        className=" w-16 h-16 rounded-md bg-gray-700 border border-blue-500 flex items-center justify-center text-blue-400 hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
         onClick={handleClick}
       >
         <span className="font-bold text-sm">How to use</span>
