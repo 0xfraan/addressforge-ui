@@ -15,7 +15,12 @@ interface AddressInput {
   hasGolem: boolean;
 }
 
-export const AddressInput = ({ value, onChange, title , hasGolem}: AddressInput) => {
+export const AddressInput = ({
+  value,
+  onChange,
+  title,
+  hasGolem,
+}: AddressInput) => {
   const [addressChars, setAddressChars] = useState<(string | null)[]>(
     Array(40).fill(null)
   );
@@ -23,6 +28,7 @@ export const AddressInput = ({ value, onChange, title , hasGolem}: AddressInput)
   const [cursorPosition, setCursorPosition] = useState<number>(0);
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [charCount, setCharCount] = useState<number>(0);
 
   useEffect(() => {
     generateRandomPlaceholder();
@@ -35,6 +41,8 @@ export const AddressInput = ({ value, onChange, title , hasGolem}: AddressInput)
   }, [cursorPosition]);
 
   useEffect(() => {
+    const nonNullChars = addressChars.filter((char) => char !== null);
+    setCharCount(nonNullChars.length);
     const a = addressChars.map((char) => char ?? "X");
     onChange(a.join(""));
   }, [addressChars, onChange]);
@@ -143,11 +151,11 @@ export const AddressInput = ({ value, onChange, title , hasGolem}: AddressInput)
     ];
     if (
       symbols.includes(e.key) ||
-      (addressChars.join("").length >= (hasGolem ? 10 : 8) && e.key != "Backspace")
+      (charCount >= (hasGolem ? 10 : 8) && e.key !== "Backspace")
     ) {
       e.preventDefault();
     }
-    if (e.key === "Backspace" && cursorPosition == 40) {
+    if (e.key === "Backspace" && cursorPosition > 0) {
       e.preventDefault();
       setAddressChars((prev) => {
         const newChars = [...prev];
@@ -211,11 +219,14 @@ export const AddressInput = ({ value, onChange, title , hasGolem}: AddressInput)
           ))}
 
           <span className={`relative text-gray-400`}>
-            {cursorPosition === 40 ? " " : ""}
+            {cursorPosition === 40 ? " " : ""}
             <span className="absolute inset-0 bg-white opacity-50 animate-blink"></span>
           </span>
         </div>
       </div>
+      <span className="text-blue-400 text-sm font-mono">
+        {charCount}/{hasGolem ? "10" : "8"} characters
+      </span>
     </div>
   );
 };
