@@ -67,7 +67,7 @@ export const HistoryCard = ({
         job.state !== "running" &&
         job.state !== "sent" &&
         job.state !== "created" && (
-          <span className="text-red-400">Failed, try again later</span>
+          <span className="text-red-400">Failed, try again</span>
         )}
     </div>
   </div>

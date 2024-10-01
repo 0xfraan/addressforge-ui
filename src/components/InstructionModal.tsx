@@ -33,23 +33,23 @@ export const InstructionsModal: React.FC<InstructionsModalProps> = ({
             address will be automatically set as the deployer. You can edit this
             if needed.
           </p>
-          <p>
+          {/* <p>
             <strong>2. Gas Reduction:</strong> If you want, select a gas
             reduction level (2, 4, or 8) to determine the number of leading
             zeros in your contract address.
+          </p> */}
+          <p>
+            <strong>2. Enter Pattern:</strong> Input your desired address
+            pattern. You can use hexadecimal characters (0-9, a-f). If you hold at least 10 GLM you can input up to 10 characters, otherwise you are limited to 8 characters. If you want to optimize on gas, just use muliple leading zeros, you can also create a custom address that just looks nice.
           </p>
           <p>
-            <strong>3. Enter Pattern:</strong> Input your desired address
-            pattern. You can use hexadecimal characters (0-9, a-f).
-          </p>
-          <p>
-            <strong>4. Execute:</strong> Click the "Execute" button to submit
+            <strong>3. Execute:</strong> Click the {`"`}Execute{`"`} button to submit
             your job. You have a limited number of free submissions. View the
             status of your submitted jobs.
           </p>
           <p>
             <strong>Note:</strong> If you run out of free executions, you can
-            continue using the service by holding GLM tokens.
+            continue using the service by holding a minimum of 10 GLM tokens.
           </p>
         </div>
       </div>

@@ -68,7 +68,7 @@ export const AddressDialog: React.FC<AddressDialogProps> = ({
           } placeholder-gray-500 font-mono rounded-md p-2 mb-3 text-sm`}
           maxLength={42}
         />
-        {!isValidAddress && (
+        {!isValidAddress && editAddress.length>0 &&(
           <p className="text-red-500 text-sm mb-3 font-mono">
             Entered address is incorrect. Please enter a valid Ethereum address.
           </p>

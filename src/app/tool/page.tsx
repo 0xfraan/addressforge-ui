@@ -198,8 +198,10 @@ export default function Home() {
             </div>
             <AddressInput
               value={pattern}
+              onChange={
+                setPattern}
               title="Pattern"
-              onChange={function (value: string): void {}}
+              hasGolem={(balanceData?.value ?? 0) > 0}
             />
             <ConnectKitButton.Custom>
               {({ isConnected, show }) => (
@@ -208,7 +210,7 @@ export default function Home() {
                     className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-md transition-colors shadow-[0_0_10px_#0000ff] disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={isConnected ? handleSubmit : show}
                     disabled={
-                      !isInputTouched ||
+                      (isConnected && pattern == "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ||
                       (submissionsLeft === 0 && (balanceData?.value ?? 0) == 0)
                     }
                   >
@@ -224,7 +226,7 @@ export default function Home() {
                         : "LIMIT REACHED"
                       : "CONNECT WALLET"}
                   </button>
-                  {isConnected && submissionsLeft === 0 && (
+                  {isConnected && submissionsLeft === 0 && (balanceData?.value ?? 0) == 0 && (
                     <p className="text-red-500 text-sm mt-2 font-mono">
                       Hold at least 10 GLM tokens to continue.
                     </p>
