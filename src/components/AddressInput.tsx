@@ -12,9 +12,10 @@ interface AddressInput {
   value: string;
   onChange: (value: string) => void;
   title: string;
+  hasGolem: boolean;
 }
 
-export const AddressInput = ({ value, onChange, title }: AddressInput) => {
+export const AddressInput = ({ value, onChange, title , hasGolem}: AddressInput) => {
   const [addressChars, setAddressChars] = useState<(string | null)[]>(
     Array(40).fill(null)
   );
@@ -142,7 +143,7 @@ export const AddressInput = ({ value, onChange, title }: AddressInput) => {
     ];
     if (
       symbols.includes(e.key) ||
-      (addressChars.join("").length >= 8 && e.key != "Backspace")
+      (addressChars.join("").length >= (hasGolem ? 10 : 8) && e.key != "Backspace")
     ) {
       e.preventDefault();
     }

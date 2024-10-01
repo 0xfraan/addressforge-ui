@@ -36,7 +36,13 @@ export const HistoryCard = ({
       </span>
       <span
         className={`px-2 py-0.5 rounded ${
-          job.state === "done" ? "bg-green-500" : "bg-yellow-500"
+          job.state === "done"
+            ? "bg-green-500"
+            : job.state === "running" ||
+              job.state === "created" ||
+              job.state === "sent"
+            ? "bg-yellow-500"
+            : "bg-red-500"
         } text-black text-xs`}
       >
         {job.state}
@@ -57,6 +63,12 @@ export const HistoryCard = ({
           Runtime: {calculateRuntime(job.createdAt, job.finishedAt)}
         </span>
       )}
+      {job.state !== "done" &&
+        job.state !== "running" &&
+        job.state !== "sent" &&
+        job.state !== "created" && (
+          <span className="text-red-400">Failed, try again</span>
+        )}
     </div>
   </div>
 );

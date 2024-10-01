@@ -13,13 +13,14 @@ import { ConnectKitButton } from "connectkit";
 import { GetGolem } from "@/components/GetGolem";
 import { GolemBalance } from "@/components/GolemBalance";
 import { Footer } from "@/components/Footer";
-
+import { GasReduction } from "@/components/GasReduction";
+import { HelpIcon } from "@/components/HelpIcon";
 const api = axios.create({
   baseURL: "https://backend.addressforge.xyz",
 });
 
 const SUBMISSIONS_LIMIT = 5;
-const SUBMISSIONS_INTERVAL = 60 * 60 * 1000; // 1 hour in milliseconds
+const SUBMISSIONS_INTERVAL = 60 * 60 * 1000;
 
 export default function Home() {
   const [address, setAddress] = useState<string>("");
@@ -35,6 +36,8 @@ export default function Home() {
   const { address: connectedAddress, isConnected } = useAccount();
   const [submissionsLeft, setSubmissionsLeft] =
     useState<number>(SUBMISSIONS_LIMIT);
+  const [isInputTouched, setIsInputTouched] = useState<boolean>(false);
+  const [countdownTime, setCountdownTime] = useState<string>("");
 
   const GLM_CONTRACT_ADDRESS = "0x0B220b82F3eA3B7F6d9A1D8ab58930C064A2b5Bf";
   const { data: balanceData, isLoading: isBalanceLoading } = useBalance({
@@ -68,6 +71,31 @@ export default function Home() {
     const interval = setInterval(fetchJobs, 5000);
     return () => clearInterval(interval);
   }, [isConnected, connectedAddress]);
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      const submissions = JSON.parse(
+        localStorage.getItem("submissions") || "[]"
+      );
+      if (submissions.length > 0 && submissionsLeft === 0) {
+        const oldestSubmission = Math.min(...submissions);
+        const timeUntilRenewal =
+          oldestSubmission + SUBMISSIONS_INTERVAL - Date.now();
+        if (timeUntilRenewal > 0) {
+          const minutes = Math.floor(timeUntilRenewal / 60000);
+          const seconds = Math.floor((timeUntilRenewal % 60000) / 1000);
+          setCountdownTime(`${minutes}m ${seconds}s`);
+        } else {
+          setCountdownTime("");
+        }
+      } else {
+        setCountdownTime("");
+      }
+    };
+
+    const countdownInterval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(countdownInterval);
+  }, [submissionsLeft]);
 
   useEffect(() => {
     const updateSubmissionsLeft = () => {
@@ -110,7 +138,6 @@ export default function Home() {
       };
       setJobs([newJob, ...jobs]);
 
-      // Update localStorage and submissions left
       const submissions = JSON.parse(
         localStorage.getItem("submissions") || "[]"
       );
@@ -155,38 +182,56 @@ export default function Home() {
       <main className="flex-grow container mx-auto px-4 flex justify-center items-center">
         <div className="flex flex-col items-center space-y-6 mx-auto w-[29rem]">
           <div className="bg-gray-800 p-6 rounded-2xl space-y-6 w-full font-mono border border-blue-500 shadow-[0_0_10px_#0000ff]">
-            <DeployerSection
-              address={address}
-              glitchEffect={glitchEffect}
-              onEditClick={() => setIsAddressDialogOpen(true)}
-              isDisabled={!isConnected}
-            />
+            <div className="flex justify-between">
+              <DeployerSection
+                address={address}
+                glitchEffect={glitchEffect}
+                onEditClick={() => setIsAddressDialogOpen(true)}
+                isDisabled={!isConnected}
+              />
+              {/* <GasReduction
+                onChange={(value) =>
+                  console.log(`Selected gas reduction: ${value}`)
+                }
+              /> */}
+              <HelpIcon />
+            </div>
             <AddressInput
               value={pattern}
-              onChange={setPattern}
+              onChange={
+                setPattern}
               title="Pattern"
+              hasGolem={(balanceData?.value ?? 0) > 0}
             />
             <ConnectKitButton.Custom>
               {({ isConnected, show }) => (
-                <button
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-md transition-colors shadow-[0_0_10px_#0000ff]"
-                  onClick={isConnected ? handleSubmit : show}
-                  //@ts-ignore
-                  disabled={submissionsLeft === 0 && balanceData?.value == 0}
-                >
-                  {isConnected
-                    ? //@ts-ignore
-                      submissionsLeft > 0 || balanceData?.value > 0
-                      ? //@ts-ignore
-                        `EXECUTE ${
-                          //@ts-ignore
-                          balanceData?.value > 0
-                            ? ""
-                            : `(${submissionsLeft} left)`
-                        }`
-                      : "LIMIT REACHED"
-                    : "CONNECT WALLET"}
-                </button>
+                <div>
+                  <button
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-md transition-colors shadow-[0_0_10px_#0000ff] disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={isConnected ? handleSubmit : show}
+                    disabled={
+                      (isConnected && pattern == "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ||
+                      (submissionsLeft === 0 && (balanceData?.value ?? 0) == 0)
+                    }
+                  >
+                    {isConnected
+                      ? submissionsLeft > 0 || (balanceData?.value ?? 0) > 0
+                        ? `EXECUTE ${
+                            balanceData?.value ?? 0 > 0
+                              ? ""
+                              : `(${submissionsLeft} left)`
+                          }`
+                        : countdownTime
+                        ? `LIMIT RENEWS IN ${countdownTime}`
+                        : "LIMIT REACHED"
+                      : "CONNECT WALLET"}
+                  </button>
+                  {isConnected && submissionsLeft === 0 && (balanceData?.value ?? 0) == 0 && (
+                    <p className="text-red-500 text-sm mt-2 font-mono">
+                      Hold at least 10 GLM tokens to continue.
+                    </p>
+                  )}
+                </div>
               )}
             </ConnectKitButton.Custom>
           </div>
@@ -210,6 +255,7 @@ export default function Home() {
         editAddress={editAddress}
         setEditAddress={setEditAddress}
         onSubmit={handleEditSubmit}
+        connectedAddress={connectedAddress}
       />
 
       <JobDetails
