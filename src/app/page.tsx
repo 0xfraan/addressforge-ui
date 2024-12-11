@@ -22,7 +22,7 @@ export default function Home() {
           <div className="h-4 w-px bg-blue-500" />
 
           <Link
-            href={""}
+            href={"https://github.com/0xfraan/addressforge-backend"}
             className="flex items-center space-x-2 text-blue-500 hover:text-blue-400 transition-colors"
           >
             <span>Github</span>
@@ -34,11 +34,13 @@ export default function Home() {
             />
           </Link>
           <Link
-          href="/tool"
-          className="bg-blue-500 hover:bg-blue-600 text-white font-mono font-semibold py-2 px-4 rounded-md transition-colors shadow-[0_0_5px_#0000ff] flex items-center space-x-2"
+
+            href="/tool"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-mono font-semibold py-2 px-4 rounded-md transition-colors shadow-[0_0_5px_#0000ff] flex items-center space-x-2"
           >
-          LAUNCH APP
-        </Link>
+            LAUNCH APP
+          </Link
+
         </nav>
       </header>
 
